@@ -11,8 +11,11 @@ import random
 class NguzzoneVacuumAgent(VacuumAgent):
     clean_streak = 0
     start = 0
-
-    movements = ['Left','Right','Up', 'Down']
+    past_tiles = set()
+    past_notess = set() #set of strings containing letters reffering to what was perceived 
+    
+    movements = ['Up','Down','Right', 'Left']
+    positions = [(0,1), (0,-1), (1,0),(-1,0)]
     def __init__(self):
         super().__init__()
         #any initiliztion you want to do here
@@ -24,78 +27,36 @@ class NguzzoneVacuumAgent(VacuumAgent):
         #if bumpDetected = 3 then a bump has been detected BELOW
         #if bumpDetected = 4 then a bump has been detected to the RIGHT
         self.bumpDetected = 0
-        
+        self.position = (0,0)
         self.justSucked = 0
         
-
-    
+        #if cur_move = 0 then go up
+        self.cur_move = 0
+        #if cur_move = 1 then go left
+        #if cur_move = 2 then go down
+        #if cur_move = 3 then go right
         
+        
+#Theory: Make it map the room in a 2d space and go around obstacles as needed. Make an algortihm that hugs the wwalls and goes around. Then comes back to the origin spot.
+#How would it hug the walls? if it runs into a bump, go in a direction next to the og direction that you went when you hit the bump. However evertime you move, first move in the 
+#og direction to make sure the wall is still there.
+        
+            
+    
+#Performs a depth first search 
     def program(self, percept):
             # your amazing Ai vacuum cleaner code goes here
-            
-            #initial start sequence
-            if NguzzoneVacuumAgent.start == 0:
-                
-                if percept[1] == 'Bump':
-                    #bumpDetected = 0 means that a bump has been detected above. 
-                    if self.last_move == 'Up' and self.bumpDetected == 0:
-                        self.bumpDetected = 1
-                        self.last_move = 'Left'
-                        self.past_choice = 'Left'
-                        return 'Left'
-                    elif self.last_move == 'Left' and self.bumpDetected == 1:
-                        self.bumpDetected = 2
-                        self.last_move = 'Down'
-                        self.past_choice = 'Down'
-                        return'Down'
-                    elif self.last_move == 'Down' and self.bumpDetected == 2:
-                        self.bumpDetected = 3
-                        self.last_move = 'Right'
-                        self.past_choice = 'Right'
-                        return 'Right'
-                    elif self.last_move == 'Right' and self.bumpDetected == 3: 
-                        self.bumpDetected = 4
-                        self.last_move = 'Up'
-                        self.past_choice = 'Up'
-                        return 'Up'
-                    elif self.last_move == 'Up' and self.bumpDetected != 0:
-                        self.last_move = 'Left'
-                        self.past_choice = 'Left'
-                        self.bumpDetected = 0
-                        return 'Left'
-                    elif self.last_move == 'Left' and self.bumpDetected == 0:
-                        self.last_move = 'Down'
-                        self.past_choice = 'Down'
-                        NguzzoneVacuumAgent.start = 1
-                        return 'Down'
+            if percept[0] == 'Dirty': 
+                self.past_choice = 'Suck'
+                return 'Suck'
+            else:
+                x,y = self.position
+                if self.cur_move == 0:
+                    newX, newY = x, y + 1
+                    self.last_move = 'Up'
                     
-                elif percept[0] == 'Dirty':
-                    self.past_choice = 'Suck'
-                    return 'Suck'
-                elif percept[0] == 'Clean' and percept[1] == 'None':
-                    if self.last_move == "":
-                        self.last_move = 'Up'
-                        self.past_choice = 'Up'
-                        return 'Up'
-                    else:
-                        return self.last_move
-            elif NguzzoneVacuumAgent.start == 1:
-                #go in a direction till you hit a bump or 10 clean tiles in a row
-                if percept [0] == 'Dirty':
-                    self.past_choice = 'Suck'
-                    return 'Suck'
-                elif percept[1] == 'None':
-                    return self.last_move
-                elif percept[1] == 'Bump': 
-                    recent = NguzzoneVacuumAgent.movements.index(self.last_move)
-                    r = random.randint(0, 3)
-                    while r == recent:
-                        r = random.randint(0,3)
-                    rmove = NguzzoneVacuumAgent.movements[r]
-                    self.last_move = rmove
-                    self.past_choice = rmove
-                    return rmove
                 
-
+            #initial start sequence
+            
             
      
