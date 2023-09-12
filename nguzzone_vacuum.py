@@ -73,7 +73,12 @@ class NguzzoneVacuumAgent(VacuumAgent):
                     self.past_choice = 'Suck'
                     return 'Suck'
                 elif percept[0] == 'Clean' and percept[1] == 'None':
-                    return self.last_move
+                    if self.last_move == "":
+                        self.last_move = 'Up'
+                        self.past_choice = 'Up'
+                        return 'Up'
+                    else:
+                        return self.last_move
             elif NguzzoneVacuumAgent.start == 1:
                 #go in a direction till you hit a bump or 10 clean tiles in a row
                 if percept [0] == 'Dirty':
