@@ -11,7 +11,7 @@ import random
 class NguzzoneVacuumAgent(VacuumAgent):
     clean_streak = 0
     start = 0
-    
+    wall_start = 0
     past_tiles = set()
     past_notess = set() #set of strings containing letters reffering to what was perceived 
     
@@ -73,9 +73,42 @@ class NguzzoneVacuumAgent(VacuumAgent):
             self.clean_streak = 0
             self.past_choice = 'Suck'
             return 'Suck'
-        elif percept[1] == 'Bump':
-            self.las
-    
+        elif NguzzoneVacuumAgent.wall_start = 0:
+            self.last_direction = 'Down'
+            self.last_move = 'Down'
+            updatePosition(self, self.last_direction)
+            return 'Down'
+        
+        elif percept[1] == 'Bump' and self.last_move != self.last_direction:
+            self.last_move = self.last_direction
+            updatePosition(self, self.last_direction)
+        elif percept[1] == 'Bump' and self.last_mov == self.last_direction:
+        
+    def updatePosition(self, direction):
+        if direction in NguzzoneVacuumAgent.movements:
+            if direction == 'Up':
+                self.position = (self.position[0], self.position[1] + 1)
+                NguzzoneVacuumAgent.past_tiles.add(self.position)
+                return 1
+            elif direction == 'Left':
+                self.position = (self.position[0] - 1, self.position[1])
+                NguzzoneVacuumAgent.past_tiles.add(self.position)
+                return 2
+            elif direction == 'Down':
+                self.position = (self.position[0], self.position[1] + 1)
+                NguzzoneVacuumAgent.past_tiles.add(self.position)
+                return 3
+            elif direction == 'Right':
+                self.position = (self.position[0] + 1, self.position[1])
+                NguzzoneVacuumAgent.past_tiles.add(self.position)
+                return 4
+            
+        else:
+            return 0
+        
+        def newDirection(self, direction):
+            
+
 #Performs a depth first search 
     def program(self, percept):
             # your amazing Ai vacuum cleaner code goes here
