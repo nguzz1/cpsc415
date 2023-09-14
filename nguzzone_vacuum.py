@@ -82,10 +82,21 @@ class NguzzoneVacuumAgent(VacuumAgent):
         elif percept[1] == 'Bump' and self.last_move != self.last_direction:
             self.last_move = self.last_direction
             updatePosition(self, self.last_direction)
-        elif percept[1] == 'Bump' and self.last_mov == self.last_direction:
+            
+        elif percept[1] == 'Bump' and self.last_move == self.last_direction:
+            newDirection(self, self.last_direction)
+            return self.last_direction
         
+        #if we didn't hit a bump and are no longer moving in the same direction as we were
+        elif percept[1] == 'None' and self.last_move != self.last_direction:
+            
+        #if we didn't hit a bump and are still going in the og direction.
+        elif percept[1] == 'None' and self.last_move == self.last_direction:
+            
     def updatePosition(self, direction):
         if direction in NguzzoneVacuumAgent.movements:
+            self.clean_streak += 1
+            
             if direction == 'Up':
                 self.position = (self.position[0], self.position[1] + 1)
                 NguzzoneVacuumAgent.past_tiles.add(self.position)
@@ -107,7 +118,17 @@ class NguzzoneVacuumAgent(VacuumAgent):
             return 0
         
         def newDirection(self, direction):
-            
+            if direction in NguzzoneVacuumAgent.movements:
+                if direction == 'Up':
+                    #if you hit a wall going up, try going to the left
+                    self.last_direction = 'Left'
+                elif direction == 'Left':
+                    self.last_direction = 'Down' 
+                elif direction == 'Down':
+                    self.last_direction = 'Right'
+                elif direction == 'Right':
+                    self.last_direction = 'Up'
+                    
 
 #Performs a depth first search 
     def program(self, percept):
