@@ -84,56 +84,56 @@ class NguzzoneVacuumAgent(VacuumAgent):
         if self.position in NguzzoneVacuumAgent.past_tiles and self.past_position != self.position:
             NguzzoneVacuumAgent.map_walls = 0
             print('No More Walls Left!!!')
-        else:
-            if percept[0] == 'Dirty':
-                self.clean_streak = 0
-                self.past_choice = 'Suck'
-                return 'Suck'
-            elif NguzzoneVacuumAgent.wall_first_run == 1:
-                
-                if percept[1] == 'Bump':
-                    self.bumpStreak += 1
-                else:
-                    self.bumpStreak == 0
-                    
-                self.last_direction = 'Down'
-                self.last_move = 'Down'
-                NguzzoneVacuumAgent.updatePosition(self, self.last_direction)
-                NguzzoneVacuumAgent.wall_first_run = 0
-                return 'Down'
+    
+        if percept[0] == 'Dirty':
+            self.clean_streak = 0
+            self.past_choice = 'Suck'
+            return 'Suck'
+        elif NguzzoneVacuumAgent.wall_first_run == 1:
             
-            elif percept[1] == 'Bump' and self.last_move != self.last_direction:
+            if percept[1] == 'Bump':
                 self.bumpStreak += 1
-                self.bumpDirection = self.last_move
-                self.last_move = self.last_direction
-                NguzzoneVacuumAgent.goBack(self, self.bumpDirection)
-                NguzzoneVacuumAgent.updatePosition(self, self.last_direction)
+            else:
+                self.bumpStreak == 0
                 
-                return self.last_direction
-                
-            elif percept[1] == 'Bump' and self.last_move == self.last_direction:
-                self.bumpStreak += 1
-                self.bumpDirection = self.last_move
-                NguzzoneVacuumAgent.goBack(self, self.bumpDirection)
-                NguzzoneVacuumAgent.newDirection(self, self.last_direction)
-                return self.last_direction
-            
-            #if we didn't hit a bump and are no longer moving in the same direction as we were
-            elif percept[1] == 'None' and self.last_move != self.last_direction:
-                self.bumpStreak = 0
-                holder = self.last_direction
-                self.last_direction = self.last_move
-                opposite = NguzzoneVacuumAgent.opp_pos(self, holder)
-                self.last_move = opposite
-                NguzzoneVacuumAgent.past_tiles.add(self.position)
-                return self.last_move
-                
-            #if we didn't hit a bump and are still going in the og direction.
-            elif percept[1] == 'None' and self.last_move == self.last_direction:
-                self.bumpStreak = 0
-                NguzzoneVacuumAgent.past_tiles.add(self.position)
-                return self.bumpDirection
+            self.last_direction = 'Down'
+            self.last_move = 'Down'
+            NguzzoneVacuumAgent.updatePosition(self, self.last_direction)
+            NguzzoneVacuumAgent.wall_first_run = 0
+            return 'Down'
         
+        elif percept[1] == 'Bump' and self.last_move != self.last_direction:
+            self.bumpStreak += 1
+            self.bumpDirection = self.last_move
+            self.last_move = self.last_direction
+            NguzzoneVacuumAgent.goBack(self, self.bumpDirection)
+            NguzzoneVacuumAgent.updatePosition(self, self.last_direction)
+            
+            return self.last_direction
+            
+        elif percept[1] == 'Bump' and self.last_move == self.last_direction:
+            self.bumpStreak += 1
+            self.bumpDirection = self.last_move
+            NguzzoneVacuumAgent.goBack(self, self.bumpDirection)
+            NguzzoneVacuumAgent.newDirection(self, self.last_direction)
+            return self.last_direction
+        
+        #if we didn't hit a bump and are no longer moving in the same direction as we were
+        elif percept[1] == 'None' and self.last_move != self.last_direction:
+            self.bumpStreak = 0
+            holder = self.last_direction
+            self.last_direction = self.last_move
+            opposite = NguzzoneVacuumAgent.opp_pos(self, holder)
+            self.last_move = opposite
+            NguzzoneVacuumAgent.past_tiles.add(self.position)
+            return self.last_move
+            
+        #if we didn't hit a bump and are still going in the og direction.
+        elif percept[1] == 'None' and self.last_move == self.last_direction:
+            self.bumpStreak = 0
+            NguzzoneVacuumAgent.past_tiles.add(self.position)
+            return self.bumpDirection
+    
             
     def map_inside(self, percept):
         return 'Left'
@@ -150,7 +150,6 @@ class NguzzoneVacuumAgent(VacuumAgent):
                 return 'Up'
             elif direction == 'Right':
                 return 'Left'
-            
         
         return None
             
@@ -238,9 +237,8 @@ class NguzzoneVacuumAgent(VacuumAgent):
                 return nextMove
             else: 
                 return 'NoOp'
+            
                     
                 
-            #initial start sequence
-            
             
      
