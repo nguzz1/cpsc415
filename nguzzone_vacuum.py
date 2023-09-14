@@ -11,15 +11,17 @@ import random
 class NguzzoneVacuumAgent(VacuumAgent):
     clean_streak = 0
     start = 0
+    
     past_tiles = set()
     past_notess = set() #set of strings containing letters reffering to what was perceived 
     
-    movements = ['Up','Down','Right', 'Left']
-    positions = [(0,1), (0,-1), (1,0),(-1,0)]
+    movements = ['Up','Left','Down', 'Right']
+    positions = [(0,1), (-1,0), (0,-1),(1,0)]
     def __init__(self):
         super().__init__()
         #any initiliztion you want to do here
         self.last_move = ""
+        self.last_direction = ""
         self.past_choice = ""
         #if bumpDetected = 0 then no bump has been detected (we are floating)
         #if bumpDetected = 1 then bump has been detected ABOVE
@@ -30,6 +32,7 @@ class NguzzoneVacuumAgent(VacuumAgent):
         self.position = (0,0)
         self.justSucked = 0
         
+
         #if cur_move = 0 then go up
         self.cur_move = 0
         #if cur_move = 1 then go left
@@ -40,8 +43,38 @@ class NguzzoneVacuumAgent(VacuumAgent):
 #Theory: Make it map the room in a 2d space and go around obstacles as needed. Make an algortihm that hugs the wwalls and goes around. Then comes back to the origin spot.
 #How would it hug the walls? if it runs into a bump, go in a direction next to the og direction that you went when you hit the bump. However evertime you move, first move in the 
 #og direction to make sure the wall is still there.
+
+#go Up to the ceiling then try and map the walls of the room by going left and calling the map_walls function.
+    def start(self, percept):
+        if percept[0] == 'Dirty':
+            self.clean_streak = 0
+            self.past_choice = 'Suck'
+            return 'Suck'
+        elif percept[1] == 'Bump':
+            self.bumpDetected = 1
+            self.clean_streak += 1
+            self.last_move = 'Left'
+            self.past_choice = 'Left'
+            self.position = (self.position[0] - 1, self.position[1])
+            NguzzoneVacuumAgent.past_tiles.add(self.position)
+            NguzzoneVacuumAgent.start = 1
+            return 'Left'
+        elif percept[1] == 'None':
+            self.clean_streak += 1
+            self.last_move = 'Up'
+            self.past_choice = 'Up'
+            self.position = (self.position[0], self.position[1] + 1)
+            NguzzoneVacuumAgent().past_tiles.add(self.position)
+            return 'Up'
+                    
         
-            
+    def map_walls(self, percept):
+        if percept[0] == 'Dirty':
+            self.clean_streak = 0
+            self.past_choice = 'Suck'
+            return 'Suck'
+        elif percept[1] == 'Bump':
+            self.las
     
 #Performs a depth first search 
     def program(self, percept):
