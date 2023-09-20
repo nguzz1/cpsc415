@@ -2,7 +2,7 @@
 
 '''
 CPSC 415 -- Homework #2 template
-Stephen Davies, University of Mary Washington, fall 2023
+Nicolas Guzzone, University of Mary Washington, fall 2023
 '''
 
 from atlas import Atlas
@@ -21,10 +21,28 @@ def find_path(atlas, alg):
     of that path.'''
 
     # THIS IS WHERE YOUR AMAZING CODE GOES
+    if alg == 'greedy':
+        return greedy(atlas)
+    elif alg == 'Dijkstras':
+        return djikstras(atlas)
+    elif alg == 'A*':
+        return aStar(atlas)
+    
+    
 
     # Here's a (bogus) example return value:
     return ([0,3,2,4],970)
 
+
+def greedy(atlas):
+    
+    return None
+
+def djikstras(atlas):
+    return None
+
+def aStar(atlas):
+    return None
 
 
 if __name__ == '__main__':
