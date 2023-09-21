@@ -79,13 +79,12 @@ def greedy(atlas):
                 
                 
             
-    return None
 
 def djikstras(atlas):
-    return None
+    return "Unimplemented"
 
 def aStar(atlas):
-    return None
+    return "Unimplemented"
 
 
 if __name__ == '__main__':
