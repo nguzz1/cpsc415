@@ -7,6 +7,7 @@ Nicolas Guzzone, University of Mary Washington, fall 2023
 
 from atlas import Atlas
 import numpy as np
+import math
 import sys
 
 
@@ -59,17 +60,17 @@ def greedy(atlas):
                 #node where we found the shortest crows fly distance of the current row
                 heuristicNode = (i,j)
                 
-            #if we are at the final column in the row, expand the column who has the shortest crow flys distance to the goal
-            if i == goal_city: 
-                #add the road distance to the total distance of the path taken
-                total += Atlas.get_road_dist(atlas,heuristicNode[0], heuristicNode[1])
-                #add the node we expanded to our path
-                path.append(heuristicNode)
-                #move the the row of the new city we just decided to go to
-                j = heuristicNode[i]
-                #reset shortestCrow and closestNode
-                shortestCrow = 0
-                heuristicNode = (0,0)
+                rDist = Atlas.get_road_dist(atlas,heuristicNode[0], heuristicNode[1])
+                #if a road exists to the city with the smallest crows fly distance then go to it
+                if rDist != math.inf:
+                    path.append(heuristicNode)
+                    #move the the row of the new city we just decided to go to
+                    j = heuristicNode[i]
+                    #reset shortestCrow and closestNode
+                    shortestCrow = 0
+                    heuristicNode = (0,0)
+                    
+               
         #check to see if we have entered the goal state/city/row 
         if j == goal_city:
             goal = True
