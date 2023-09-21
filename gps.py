@@ -35,7 +35,50 @@ def find_path(atlas, alg):
 
 
 def greedy(atlas):
+    i = 0
+    j = 0
+    heuristicNode = (i,j)
+    shortestCrow = 0
+    total = 0
+    path = []
+    goal = False
+    goal_city = Atlas.get_num_cities() - 1 #this number is the goal city and the number of rows and columns in the matrix
     
+    
+    #While we have not entered the goal state/city, keep searching
+    while goal == False:
+        #loop through every column in the current row
+        
+        for i in range(goal_city):
+            #calculate the crowFlys distance for this node
+            cFly = Atlas.get_crow_flies_dist(i, j)
+            
+            #if the crowFlys distance is the shortest we've come across on this row, save it
+            if cFly < shortestCrow or shortestCrow == 0:
+                shortestCrow = cFly
+                #node where we found the shortest crows fly distance of the current row
+                heuristicNode = (i,j)
+                
+            #if we are at the final column in the row, expand the column who has the shortest crow flys distance to the goal
+            if i == goal_city: 
+                #add the road distance to the total distance of the path taken
+                total += Atlas.get_road_dist(heuristicNode[0], heuristicNode[1])
+                #add the node we expanded to our path
+                path.append(heuristicNode)
+                #move the the row of the new city we just decided to go to
+                j = heuristicNode[i]
+                #reset shortestCrow and closestNode
+                shortestCrow = 0
+                heuristicNode = (0,0)
+        #check to see if we have entered the goal state/city/row 
+        if j == goal_city:
+            goal = True
+            
+    return path, total
+                
+                
+                
+            
     return None
 
 def djikstras(atlas):
