@@ -21,6 +21,7 @@ def find_path(atlas, alg):
     optimal path between those two cities. The second is the total cost
     of that path.'''
 
+    print(atlas)
     # THIS IS WHERE YOUR AMAZING CODE GOES
     if alg == 'greedy':
         return greedy(atlas)
@@ -53,7 +54,8 @@ def greedy(atlas):
         for i in range(goal_city):
             #calculate the crowFlys distance for this node
             cFly = Atlas.get_crow_flies_dist(atlas, i, j)
-            
+            print(f"i : {i} , j : {j}")
+            print( f"is {cFly} < {shortestCrow}")
             #if the crowFlys distance is the shortest we've come across on this row, save it
             if cFly < shortestCrow or shortestCrow == 0:
                 shortestCrow = cFly
@@ -61,6 +63,7 @@ def greedy(atlas):
                 heuristicNode = (i,j)
                 
                 rDist = Atlas.get_road_dist(atlas,heuristicNode[0], heuristicNode[1])
+                print(f"rDist : {rDist}")
                 #if a road exists to the city with the smallest crows fly distance then go to it
                 if rDist != math.inf:
                     path.append(heuristicNode)
@@ -69,12 +72,12 @@ def greedy(atlas):
                     #reset shortestCrow and closestNode
                     shortestCrow = 0
                     heuristicNode = (0,0)
-                    
-               
+            
+             print(f"path on turn {i}:  {path}")
         #check to see if we have entered the goal state/city/row 
         if j == goal_city:
             goal = True
-            
+        print(goal)
     return path, total
                 
                 
