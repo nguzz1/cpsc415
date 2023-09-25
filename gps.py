@@ -100,7 +100,40 @@ def greedy(atlas):
 
 def djikstras(atlas):
 
+    cities = atlas.get_num_cities()
     
+    #Atlas Copy of the rows with boolean value of whethe ror not we have visited it
+    #make all cities false since we have never visited them yet
+    expanded = [False] * cities
+    #keep track of all the actual distances of each city
+  
+    start = 0
+    goal = cities - 1
+    
+    #list that keeps track of the entire path
+    path = [start]
+    total = 0
+    
+    
+    curr_city = start 
+    pq = [(0, start)]
+
+    while pq:
+        smallDist = math.inf
+        smallIndex = None
+        
+        for i, (dist, city) in enumerate(pq):
+            if dist < smallDist:
+                smallDist = dist
+                smallIndex = i
+                
+        dist, curr_city = pq.pop(smallIndex)
+        
+        
+        if expanded[curr_city]:
+            continue
+        
+        
     return "Unimplemented"
 
 def aStar(atlas):
