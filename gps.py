@@ -43,7 +43,6 @@ def greedy(atlas):
     #Atlas Copy of the rows with boolean value of whethe ror not we have visited it
     #make all cities false since we have never visited them yet
     expanded = [False] * cities
-    print(expanded)
     #keep track of all the actual distances of each city
   
     start = 0
@@ -66,15 +65,12 @@ def greedy(atlas):
         smallest = math.inf
         #next city we should visit
         go_here = None
-        print(f"curr_city: {curr_city}")
         #loop through every city in the row
         for city in range(cities):
-            print(f"city: {city}")
             # if we haven't expanded the city yet, then check its distances
             if not expanded[city]:
                 rDist = atlas.get_road_dist(curr_city, city)
                 cDist = atlas.get_crow_flies_dist(city, goal)
-                print(f"cDist: {cDist}  smallest: {smallest}")
                 #if a road exists between the cities, then check the heuristic
                 if rDist < math.inf:
                     #check to see if the crow flys distance of this city is the smallest 
@@ -84,7 +80,7 @@ def greedy(atlas):
                         go_here = city
         #afd the path cost to our total cost              
         total += atlas.get_road_dist(curr_city, go_here)
-        print(f"total: {total}")
+       
         #add the city to our path
         path.append(go_here)
         #update our current city
