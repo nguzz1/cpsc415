@@ -20,6 +20,7 @@ def find_path(atlas, alg):
     optimal path between those two cities. The second is the total cost
     of that path.'''
 
+    
     # THIS IS WHERE YOUR AMAZING CODE GOES
     if alg == 'greedy':
         return greedy(atlas)
@@ -35,12 +36,22 @@ def find_path(atlas, alg):
 
 
 def greedy(atlas):
+    #get the atlas and save our position
+    path = []
+    goal = atlas.num_cities - 1
+    
     return "Unimplemented"
 
 def djikstras(atlas):
+    path = []
+    goal = atlas.num_cities - 1
+    
     return "Unimplemented"
 
 def aStar(atlas):
+    path = []
+    goal = atlas.num_cities - 1
+    
     return "Unimplemented"
 
 
