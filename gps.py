@@ -90,6 +90,8 @@ def greedy(atlas):
         #update our current city
         curr_city = go_here
         
+    total += atlas.get_road_dist(curr_city, go_here)
+    path.append(go_here)
  
 
     
