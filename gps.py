@@ -36,11 +36,21 @@ def find_path(atlas, alg):
 
 
 def greedy(atlas):
+<<<<<<< Updated upstream
     #get the atlas and save our position
     path = []
     goal = atlas.num_cities - 1
     
     return "Unimplemented"
+=======
+    #I need to restart. fuck this rabbithole
+    return "Unimplemented"
+
+                
+                
+                
+            
+>>>>>>> Stashed changes
 
 def djikstras(atlas):
     path = []
