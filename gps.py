@@ -8,6 +8,7 @@ Nicolas Guzzone, University of Mary Washington, fall 2023
 from atlas import Atlas
 import numpy as np
 import sys
+import math
 
 
 def find_path(atlas, alg):
@@ -28,7 +29,7 @@ def find_path(atlas, alg):
         return djikstras(atlas)
     elif alg == 'A*':
         return aStar(atlas)
-    
+  
     
 
     # Here's a (bogus) example return value:
@@ -37,10 +38,63 @@ def find_path(atlas, alg):
 
 def greedy(atlas):
 
+    cities = atlas.get_num_cities()
+    
+    #Atlas Copy of the rows with boolean value of whethe ror not we have visited it
+    #make all cities false since we have never visited them yet
+    expanded = [False] * cities
+    print(expanded)
+    #keep track of all the actual distances of each city
+  
+    start = 0
+    goal = cities - 1
+    
+    #list that keeps track of the entire path
+    path = [start]
+    total = 0
+    
+    
+    curr_city = start 
+    
+    #while we are not in the goal keep trying to find the goal
+    while curr_city != goal:
+        
+        #we have expanded the city we are currently at
+        expanded[curr_city] = True
+        
+        #variable that keeps track of the smallest crows fly distance of the current row
+        smallest = math.inf
+        #next city we should visit
+        go_here = None
+        print(f"curr_city: {curr_city}")
+        #loop through every city in the row
+        for city in range(cities):
+            print(f"city: {city}")
+            # if we haven't expanded the city yet, then check its distances
+            if not expanded[city]:
+                rDist = atlas.get_road_dist(curr_city, city)
+                cDist = atlas.get_crow_flies_dist(city, goal)
+                print(f"cDist: {cDist}  smallest: {smallest}")
+                #if a road exists between the cities, then check the heuristic
+                if rDist < math.inf:
+                    #check to see if the crow flys distance of this city is the smallest 
+                    #if it is, we go to that city
+                    if cDist < smallest:
+                        smallest = cDist
+                        go_here = city
+        #afd the path cost to our total cost              
+        total += atlas.get_road_dist(curr_city, go_here)
+        print(f"total: {total}")
+        #add the city to our path
+        path.append(go_here)
+        #update our current city
+        curr_city = go_here
+        
  
 
+    
     #I need to restart. fuck this rabbithole
-    return "Unimplemented"
+    return path, total
 
                 
                 
