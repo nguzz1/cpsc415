@@ -100,80 +100,10 @@ def greedy(atlas):
 
 def djikstras(atlas):
 
-    cities = atlas.get_num_cities()
-    
-    #Atlas Copy of the rows with boolean value of whethe ror not we have visited it
-    #make all cities false since we have never visited them yet
-    expanded = [False] * cities
-    #keep track of all the actual distances of each city
-  
-    start = 0
-    goal = cities - 1
-    
-    #list that keeps track of the entire path
-    path = [start]
-    total = 0
-    nogo = []
-    
-    curr_city = start 
-    past_city = None
-    inf = 0
-    #while we are not in the goal keep trying to find the goal
-    while curr_city != goal:
-        print(curr_city)
-        #we have expanded the city we are currently at
-        expanded[curr_city] = True
-        print(f"expanded: {expanded}")
-        #variable that keeps track of the smallest crows fly distance of the current row
-        smallest = math.inf
-        #next city we should visit
-        go_here = None
-        inf = 0
-        #loop through every city in the row
-        for city in range(cities):
-            print(f"city: {city}")
-            print(f"smallest: {smallest}")
-            # if we haven't expanded the city yet, then check its distances
-            rDist = atlas.get_road_dist(curr_city, city)
-            if not expanded[city] and city not in nogo:
-                
-               
-                #if a road exists between the cities, then check the heuristic
-                print(f"road: {rDist}")
-                if rDist < math.inf:
-                    #check to see if the crow flys distance of this city is the smallest 
-                    #if it is, we go to that city
-                    if rDist < smallest:
-                        smallest = rDist
-                        go_here = city
-                        past_city = go_here
-            if rDist == math.inf:
-                inf += 1
-                print(f"infinity count: {inf}")
-                
-            if inf == goal - 1:
-                nogo.append(city)
-                expanded[past_city] = False
-                print(expanded)
-                go_here = past_city
-                
-                
-                    
-        #afd the path cost to our total cost              
-        total += atlas.get_road_dist(curr_city, go_here)
-       
-        #add the city to our path
-        path.append(go_here)
-        #update our current city
-        curr_city = go_here
-        
-    total += atlas.get_road_dist(curr_city, go_here)
-    path.append(go_here)
- 
-
+    #I tried...
         
         
-    return path
+    return "Unimplemented"
 
 def aStar(atlas):
 
