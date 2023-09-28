@@ -10,13 +10,52 @@ import random
 board = []
 
 def hillClimb(board):
+    curBoard = board
+    while True:
+        boards = getAllBoards(curBoard)
+        goodBoards = []
+        for posBoard in boards:
+            if checkQueenPairs(posBoard) < checkQueenPairs(curBoard):
+                goodBoards.append(posBoard)
+                
+        bestBoard = max(goodBoards, key=checkQueenPairs)
+        printBoard(bestBoard)
+        
+        if checkQueenPairs(bestBoard) == 0: 
+            return bestBoard
+        
+        if bestBoard == curBoard:
+            return None
+        
+        curBoard = bestBoard
+                
+        
     return None
 
-def checkQueens(board):
-    return None
+def checkQueenPairs(board):
+    n = len(board)
+    count = 0
+    for column in range(n):
+        
+        for row in range(column+1,n):
 
-def getColumn(board):
-    return None
+            if board[column] == board[row] or board[column] - board[row] == column - row or board[row] - board[column] == row - column:
+                count += 1
+            
+    return count
+
+def getAllBoards(board):
+    n = len(board)
+    boards = []
+    for column in range(n):
+        for row in range(n):
+            
+            if board[column] != row:
+                testBoard = list(board)
+                testBoard[column] = row
+                boards.append(testBoard)
+    return boards
+        
 
 #maybe do this idk
 def printBoard(board):
@@ -36,5 +75,5 @@ def main():
     
     while goal == False:
         #check for solution. Call hill climb or checkQueens here.
-                
+        solBoard = hillClimb(board)
     return None 
