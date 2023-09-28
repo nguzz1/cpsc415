@@ -64,7 +64,9 @@ def printBoard(board):
 def viewBoard(board):    
     return None
 
+
 def main():
+    print("starting program...")
     if len(sys.argv) != 2:
         print("Error: "'To use file type "nguzzone_nqueens.py n" where n is an integer')
         sys.exit(1)
@@ -76,4 +78,7 @@ def main():
     while goal == False:
         #check for solution. Call hill climb or checkQueens here.
         solBoard = hillClimb(board)
-    return None 
+        if solBoard != None:
+            return solBoard
+        
+main()
