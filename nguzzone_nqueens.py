@@ -11,17 +11,22 @@ board = []
 
 def hillClimb(board):
     curBoard = board
+    x = 0
     while True:
+        x += 1
+        print(f"climb-turn: {x}")
         boards = getAllBoards(curBoard)
+        
         goodBoards = []
         for posBoard in boards:
             if checkQueenPairs(posBoard) < checkQueenPairs(curBoard):
                 goodBoards.append(posBoard)
-                
+        if goodBoards == []:
+            return None
         bestBoard = max(goodBoards, key=checkQueenPairs)
-        printBoard(bestBoard)
+        viewBoard(bestBoard)
         
-        if checkQueenPairs(bestBoard) == 0: 
+        if checkSolution(bestBoard): 
             return bestBoard
         
         if bestBoard == curBoard:
@@ -37,12 +42,22 @@ def checkQueenPairs(board):
     count = 0
     for column in range(n):
         
-        for row in range(column+1,n):
+        for row in range(column+1, n):
 
-            if board[column] == board[row] or board[column] - board[row] == column - row or board[row] - board[column] == row - column:
+            if board[column] == board[row] :
+                count +=1
+            elif board[column] - column == board[row] - row:
+                count += 1
+            elif column + board[column] == board[row] + row:
                 count += 1
             
     return count
+
+def checkSolution(board):
+    if checkQueenPairs(board) == 0:
+        return True
+    else:
+        return False
 
 def getAllBoards(board):
     n = len(board)
@@ -59,7 +74,7 @@ def getAllBoards(board):
 
 #maybe do this idk
 def printBoard(board):
-    n = len(board)
+    print("Board: ", end = "")
     print("[", end=" ")
     for i in board:
         print(i, end=" ")
@@ -67,7 +82,20 @@ def printBoard(board):
     return None
     
 def viewBoard(board):    
-    return None
+    n = len(board)
+
+    print("+-" + "-" *(n*2) + "-+")
+    for row in range(n):
+        print("|", end="")
+        for column in range(n):
+            if row == board[column]:
+                print(" Q",end="")
+            else:
+                print(" .",end="")
+        print(" |")
+    print("+-" + "-" *(2*n) + "-+")
+    printBoard(board)
+    print()
 
 
 def main():
@@ -77,14 +105,34 @@ def main():
         sys.exit(1)
         
     n = int(sys.argv[1])
-    board = [random.randint(0, n-1) for i in range(n)]
+    board = [random.randint(0, n-1) for _ in range(n)]
+    print("initial board")
+    viewBoard(board)
+    
     goal = False
     
+    x = 0
     while goal == False:
+        print("=======================================")
+        x += 1
+        print()
+        print()
+        print(f" Main Turn {x}")
+        print()
+        
         #check for solution. Call hill climb or checkQueens here.
+        
         solBoard = hillClimb(board)
         if solBoard != None:
-            return solBoard
-
+            print()
+            #printBoard(solBoard)
+            print("Solved!!!")
+            viewBoard(solBoard)
+            break
+        board = [random.randint(0, n-1) for _ in range(n)]
+        print("RNG'd a new board:")
+        viewBoard(board)
+        
+    
 if __name__ =="__main__":
     main()
