@@ -8,6 +8,7 @@ Created on Thu Sep 28 15:04:00 2023
 import sys
 import random
 import numpy as np
+from sklearn import preprocessing
 
 board = []
 #performs stoachastic hill climbing
@@ -20,7 +21,6 @@ def hillClimb(board):
         x += 1
         print(f"climb-turn: {x}")
         boards = getAllBoards(curBoard)
-        print(board)
         goodBoards = []
         #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
         goodHeuristics = []
@@ -66,22 +66,27 @@ def hillClimb(board):
 
 def selectBoard(goodDict, goodBoards, n):
     #goodBoards should have the boards w the lowest heuristic at the front
-    if len(list(goodDict.values())) > 1 or list(goodDict.values())[0] != 0:
-        print(f"heuristics: {list(goodDict.values())}")
+    values = np.array(list(goodDict.values()))
+    keys = np.array(list(goodDict.keys()))
+    if len(values) > 1 or values[0] != 0:
+        print(f"heuristics: {values}")
         #get a factor to normalize all of the goodBoards based on their heuristic score
         print(sum((goodDict.values())))
-        factor = 1.0/sum(goodDict.values())
+        print(f"pre-values = {values}")
         for b in goodDict:
             if goodDict[b] == n:
                 return goodBoards[b]
-            #change the heuristic score to be a normalized probability
-            goodDict[b] = goodDict[b] * factor
+  
+        values = preprocessing.normalize([values])
+        print()
+        
+         
             
         #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
         
-        print(f"list(goodDict.keys()) = {list(goodDict.keys())}")
-        print(f"list(goodDict.values()) = {list(goodDict.values())}")
-        choice = np.random.choice(list(goodDict.keys()), p = list(goodDict.values()), replace=False)
+        print(f"keys = {keys}")
+        print(f"values = {values}")
+        choice = np.random.choice(keys, p = values, replace=False)
         print(choice)
         return goodBoards[choice]
     else: 
