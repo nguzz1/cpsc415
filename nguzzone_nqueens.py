@@ -2,7 +2,7 @@
 """
 Created on Thu Sep 28 15:04:00 2023
 
-@author: nicol
+@author: nico
 """
 
 import sys
@@ -13,6 +13,7 @@ def hillClimb(board):
     curBoard = board
     n = len(board)
     x = 0
+    #loops infinitely until a solution is found or we get stuck
     while True:
         x += 1
         print(f"climb-turn: {x}")
@@ -26,8 +27,10 @@ def hillClimb(board):
             if checkQueenPairs(posBoard) < numCurQueens:
                 goodHeuristics.append(checkQueenPairs(posBoard))
                 goodBoards.append(posBoard)
+        
         goodHeuristics.sort(reverse=True)
         
+        #if there are no good boards return none to do a random restart
         if goodBoards == []:
             return None
         #here we are always choosing the board with the lowest heuristic, however we should instead have a probability function that biasly chooses a board
@@ -56,6 +59,8 @@ def selectBoard(goodBoards, goodHeuristics):
     
     return None
 
+
+#counts and returns the number of attacking queen pairs on a given board
 def checkQueenPairs(board):
     n = len(board)
     count = 0
@@ -72,12 +77,15 @@ def checkQueenPairs(board):
             
     return count
 
+#returns true if a given board is a solution and false otherwise
 def checkSolution(board):
     if checkQueenPairs(board) == 0:
         return True
     else:
         return False
 
+#get all possible new boards that could be made from a given board. 
+#Returns an array of all the boards
 def getAllBoards(board):
     n = len(board)
     boards = []
@@ -91,7 +99,7 @@ def getAllBoards(board):
     return boards
         
 
-#maybe do this idk
+#prints the array of the board
 def printBoard(board):
     print("Board: ", end = "")
     print("[", end=" ")
@@ -99,7 +107,8 @@ def printBoard(board):
         print(i, end=" ")
     print("]")
     return None
-    
+  
+#prints a visual chessboard that is aesthetically pleasing to look at  
 def viewBoard(board):    
     n = len(board)
 
@@ -115,6 +124,7 @@ def viewBoard(board):
     print("+-" + "-" *(2*n) + "-+")
     printBoard(board)
     print()
+
 
 
 def main():
