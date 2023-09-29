@@ -7,6 +7,8 @@ Created on Thu Sep 28 15:04:00 2023
 
 import sys
 import random
+import numpy as np
+
 board = []
 #performs stoachastic hill climbing
 def hillClimb(board):
@@ -22,20 +24,27 @@ def hillClimb(board):
         goodBoards = []
         #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
         goodHeuristics = []
+        goodDict = {}
+        index = 0
         for posBoard in boards:
             numCurQueens  = checkQueenPairs(curBoard)
-            if checkQueenPairs(posBoard) < numCurQueens:
-                goodHeuristics.append(checkQueenPairs(posBoard))
+            numPosQueens = checkQueenPairs(posBoard)
+            if numPosQueens < numCurQueens:
+                
+                goodHeuristics.append(numPosQueens)
                 goodBoards.append(posBoard)
-        
-        goodHeuristics.sort(reverse=True)
-        
+                
+                goodDict[index] = numPosQueens #cant have a list be a dict key
+                #have the boards be assigned to a number 
+                #when we pick a number in selectBoard() then we choose the board in goodBoards whose index is that number
+            index += 1
+                
         #if there are no good boards return none to do a random restart
         if goodBoards == []:
             return None
         #here we are always choosing the board with the lowest heuristic, however we should instead have a probability function that biasly chooses a board
-        
-        bestBoard = max(goodBoards, key=checkQueenPairs)
+        bestBoard = selectBoard(goodDict, goodBoards, n)
+        #bestBoard = max(goodBoards, key=checkQueenPairs)
         viewBoard(bestBoard)
         
         if checkSolution(bestBoard): 
@@ -55,9 +64,20 @@ def hillClimb(board):
 #Function takes in array of preffered boards and their heuristics, then assigned each of them a normalized probability based on the heuristic value
 #If the heuristic is low, it will be towards at the front of the array. Boards to the front of the array should have the highest probability
 
-def selectBoard(goodBoards, goodHeuristics):
+def selectBoard(goodDict, goodBoards, n):
+    #goodBoards should have the boards w the lowest heuristic at the front
     
-    return None
+    #get a factor to normalize all of the goodBoards based on their heuristic score
+    factor = 1.0/sum(goodDict.values())
+    for b in goodDict:
+        #chanfe the heuristic score to be a normalized probability
+        goodDict[b] = goodDict[b] * factor
+        
+    #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
+    choice = np.random.choice(1, goodDict.keys(), p = goodDict.values(), replace=False)
+    return goodBoards[choice]
+    
+    return choice
 
 
 #counts and returns the number of attacking queen pairs on a given board
@@ -141,6 +161,7 @@ def main():
     goal = False
     
     x = 0
+    #loops infinitely until a solution is found
     while goal == False:
         print("=======================================")
         x += 1
@@ -151,13 +172,18 @@ def main():
         
         #check for solution. Call hill climb or checkQueens here.
         
+        #perform hilllimbing
         solBoard = hillClimb(board)
+        #check to see if a solution board was found
         if solBoard != None:
+            #if a solution was found then return the solved board
             print()
             #printBoard(solBoard)
             print("Solved!!!")
             viewBoard(solBoard)
             break
+        #if no solution was found then that means we got stuck hillclimbing. 
+        #So generate a new random board and restart the hillclimbing process
         board = [random.randint(0, n-1) for _ in range(n)]
         print("RNG'd a new board:")
         viewBoard(board)
