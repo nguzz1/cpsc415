@@ -26,7 +26,7 @@ def hillClimb(board):
         
         if bestBoard == curBoard:
             return None
-        
+        print(bestBoard)
         curBoard = bestBoard
                 
         
@@ -59,6 +59,11 @@ def getAllBoards(board):
 
 #maybe do this idk
 def printBoard(board):
+    n = len(board)
+    print("[", end=" ")
+    for i in board:
+        print(i, end=" ")
+    print("]")
     return None
     
 def viewBoard(board):    
@@ -80,5 +85,6 @@ def main():
         solBoard = hillClimb(board)
         if solBoard != None:
             return solBoard
-        
-main()
+
+if __name__ =="__main__":
+    main()
