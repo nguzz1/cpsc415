@@ -20,7 +20,7 @@ def hillClimb(board):
         x += 1
         print(f"climb-turn: {x}")
         boards = getAllBoards(curBoard)
-        
+        print(board)
         goodBoards = []
         #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
         goodHeuristics = []
@@ -34,10 +34,10 @@ def hillClimb(board):
                 goodHeuristics.append(numPosQueens)
                 goodBoards.append(posBoard)
                 
-                goodDict[index] = numPosQueens #cant have a list be a dict key
+                goodDict[index] = n - numPosQueens #it's n - numPosQueens because a low number is good for the hueristic, but you can't normalize 0. Thus we reverse it and make it so a large number is good.
                 #have the boards be assigned to a number 
                 #when we pick a number in selectBoard() then we choose the board in goodBoards whose index is that number
-            index += 1
+                index += 1
                 
         #if there are no good boards return none to do a random restart
         if goodBoards == []:
@@ -66,36 +66,49 @@ def hillClimb(board):
 
 def selectBoard(goodDict, goodBoards, n):
     #goodBoards should have the boards w the lowest heuristic at the front
-    
-    #get a factor to normalize all of the goodBoards based on their heuristic score
-    factor = 1.0/sum(goodDict.values())
-    for b in goodDict:
-        #chanfe the heuristic score to be a normalized probability
-        goodDict[b] = goodDict[b] * factor
+    if len(list(goodDict.values())) > 1 or list(goodDict.values())[0] != 0:
+        print(f"heuristics: {list(goodDict.values())}")
+        #get a factor to normalize all of the goodBoards based on their heuristic score
+        print(sum((goodDict.values())))
+        factor = 1.0/sum(goodDict.values())
+        for b in goodDict:
+            if goodDict[b] == n:
+                return goodBoards[b]
+            #change the heuristic score to be a normalized probability
+            goodDict[b] = goodDict[b] * factor
+            
+        #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
         
-    #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
-    choice = np.random.choice(1, goodDict.keys(), p = goodDict.values(), replace=False)
-    return goodBoards[choice]
+        print(f"list(goodDict.keys()) = {list(goodDict.keys())}")
+        print(f"list(goodDict.values()) = {list(goodDict.values())}")
+        choice = np.random.choice(list(goodDict.keys()), p = list(goodDict.values()), replace=False)
+        print(choice)
+        return goodBoards[choice]
+    else: 
+        return None
     
-    return choice
+    
 
 
 #counts and returns the number of attacking queen pairs on a given board
 def checkQueenPairs(board):
-    n = len(board)
-    count = 0
-    for column in range(n):
-        
-        for row in range(column+1, n):
-
-            if board[column] == board[row] :
-                count +=1
-            elif board[column] - column == board[row] - row:
-                count += 1
-            elif column + board[column] == board[row] + row:
-                count += 1
+    if board != None:
+        n = len(board)
+        count = 0
+        for column in range(n):
             
-    return count
+            for row in range(column+1, n):
+    
+                if board[column] == board[row] :
+                    count +=1
+                elif board[column] - column == board[row] - row:
+                    count += 1
+                elif column + board[column] == board[row] + row:
+                    count += 1
+                
+        return count
+    else: 
+        return None
 
 #returns true if a given board is a solution and false otherwise
 def checkSolution(board):
@@ -107,16 +120,19 @@ def checkSolution(board):
 #get all possible new boards that could be made from a given board. 
 #Returns an array of all the boards
 def getAllBoards(board):
-    n = len(board)
-    boards = []
-    for column in range(n):
-        for row in range(n):
-            
-            if board[column] != row:
-                testBoard = list(board)
-                testBoard[column] = row
-                boards.append(testBoard)
-    return boards
+    if board != None:
+        n = len(board)
+        boards = []
+        for column in range(n):
+            for row in range(n):
+                
+                if board[column] != row:
+                    testBoard = list(board)
+                    testBoard[column] = row
+                    boards.append(testBoard)
+        return boards
+    else: 
+        return None
         
 
 #prints the array of the board
@@ -130,20 +146,21 @@ def printBoard(board):
   
 #prints a visual chessboard that is aesthetically pleasing to look at  
 def viewBoard(board):    
-    n = len(board)
-
-    print("+-" + "-" *(n*2) + "-+")
-    for row in range(n):
-        print("|", end="")
-        for column in range(n):
-            if row == board[column]:
-                print(" Q",end="")
-            else:
-                print(" .",end="")
-        print(" |")
-    print("+-" + "-" *(2*n) + "-+")
-    printBoard(board)
-    print()
+    if board != None:
+        n = len(board)
+    
+        print("+-" + "-" *(n*2) + "-+")
+        for row in range(n):
+            print("|", end="")
+            for column in range(n):
+                if row == board[column]:
+                    print(" Q",end="")
+                else:
+                    print(" .",end="")
+            print(" |")
+        print("+-" + "-" *(2*n) + "-+")
+        printBoard(board)
+        print()
 
 
 
