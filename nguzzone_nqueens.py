@@ -8,9 +8,10 @@ Created on Thu Sep 28 15:04:00 2023
 import sys
 import random
 board = []
-
+#performs stoachastic hill climbing
 def hillClimb(board):
     curBoard = board
+    n = len(board)
     x = 0
     while True:
         x += 1
@@ -18,11 +19,19 @@ def hillClimb(board):
         boards = getAllBoards(curBoard)
         
         goodBoards = []
+        #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
+        goodHeuristics = []
         for posBoard in boards:
-            if checkQueenPairs(posBoard) < checkQueenPairs(curBoard):
+            numCurQueens  = checkQueenPairs(curBoard)
+            if checkQueenPairs(posBoard) < numCurQueens:
+                goodHeuristics.append(checkQueenPairs(posBoard))
                 goodBoards.append(posBoard)
+        goodHeuristics.sort(reverse=True)
+        
         if goodBoards == []:
             return None
+        #here we are always choosing the board with the lowest heuristic, however we should instead have a probability function that biasly chooses a board
+        
         bestBoard = max(goodBoards, key=checkQueenPairs)
         viewBoard(bestBoard)
         
@@ -31,10 +40,20 @@ def hillClimb(board):
         
         if bestBoard == curBoard:
             return None
+        #if statement where if we switch the board around more than n+5 times then random restart
+        if x > n + 5:
+            return None
         print(bestBoard)
         curBoard = bestBoard
                 
         
+    return None
+
+#Function takes in array of preffered boards and their heuristics, then assigned each of them a normalized probability based on the heuristic value
+#If the heuristic is low, it will be towards at the front of the array. Boards to the front of the array should have the highest probability
+
+def selectBoard(goodBoards, goodHeuristics):
+    
     return None
 
 def checkQueenPairs(board):
