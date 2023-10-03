@@ -13,27 +13,50 @@ from sklearn import preprocessing
 board = []
 #performs stoachastic hill climbing
 def hillClimb(board):
-    bestBoard = board
     curBoard = board
     n = len(board)
     x = 0
-    bestH = n*10
     #loops infinitely until a solution is found or we get stuck
     while True:
         x += 1
         print(f"climb-turn: {x}")
-        pStochastic = random.random()
-        for index in range(n):
-            curBoard[index] = random.randint(0, n-1)
-            curNQueens = checkQueenPairs(curBoard)
-            
-            if curNQueens <= bestH:
-                bestBoard = curBoard
-                bestH = curNQueens 
-                if bestH < 0:
-                    return bestBoard
-        if pStochastic < 0.2:
-            curBoard = selectBoard(board, n)
+        boards = getAllBoards(curBoard)
+        goodBoards = []
+        #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
+        goodHeuristics = []
+        goodDict = {}
+        index = 0
+        for posBoard in boards:
+            numCurQueens  = checkQueenPairs(curBoard)
+            numPosQueens = checkQueenPairs(posBoard)
+            if numPosQueens < numCurQueens:
+                
+                goodHeuristics.append(numPosQueens)
+                goodBoards.append(posBoard)
+                
+                goodDict[index] = (n * 2) - numPosQueens #it's n - numPosQueens because a low number is good for the hueristic, but you can't normalize 0. Thus we reverse it and make it so a large number is good.
+                #have the boards be assigned to a number 
+                #when we pick a number in selectBoard() then we choose the board in goodBoards whose index is that number
+                index += 1
+                
+        #if there are no good boards return none to do a random restart
+        if goodBoards == []:
+            return None
+        #here we are always choosing the board with the lowest heuristic, however we should instead have a probability function that biasly chooses a board
+        bestBoard = selectBoard(goodDict, goodBoards, n)
+        #bestBoard = max(goodBoards, key=checkQueenPairs)
+        viewBoard(bestBoard)
+        
+        if checkSolution(bestBoard): 
+            return bestBoard
+        
+        if bestBoard == curBoard:
+            return None
+        #if statement where if we switch the board around more than n+5 times then random restart
+        if x > n + (int(n/5)):
+            return None
+        print(bestBoard)
+        curBoard = bestBoard
                 
         
     return None
@@ -41,26 +64,36 @@ def hillClimb(board):
 #Function takes in array of preffered boards and their heuristics, then assigned each of them a normalized probability based on the heuristic value
 #If the heuristic is low, it will be towards at the front of the array. Boards to the front of the array should have the highest probability
 
-def selectBoard(board, n):
+def selectBoard(goodDict, goodBoards, n):
     #goodBoards should have the boards w the lowest heuristic at the front
-    curNQueens = checkQueenPairs(board)
-    bigN = n * (n - 1)
-    selected = []
-    sNum = []
-    
-    for column in range(n):
-        for row in range(n):
-            if board[column] != row:
-                board[column] = row
-                curNQueens = checkQueenPairs(board)
-                x = 1 - (curNQueens / bigN)
-                selected.append(board)
-                sNum.append(x)
-                if x < 0 or random.random() < 0:
-                    return board
-            board[column] = row
-    return board
-    
+    values = np.array(list(goodDict.values()))
+    keys = np.array(list(goodDict.keys()))
+    if len(values) > 1 or values[0] + (n*2) != 0:
+        print(f"heuristics: {values + (n*2)}")
+        
+        #get a factor to normalize all of the goodBoards based on their heuristic score
+        print(sum((goodDict.values())))
+        print(f"pre-values = {values}")
+        probs = []
+        for b in goodDict:
+            if goodDict[b] == 0:
+                return goodBoards[b]
+            p = goodDict[b] / sum(goodDict.values())
+            probs.append(p)
+  
+     
+        
+         
+            
+        #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
+        
+        print(f"keys = {keys}")
+        print(f"prob_values = {probs}")
+        choice = np.random.choice(keys, p = probs, replace=False)
+        print(choice)
+        return goodBoards[choice]
+    else: 
+        return None
     
     
 
