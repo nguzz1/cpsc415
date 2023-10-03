@@ -19,13 +19,17 @@ def hillClimb(board):
     #loops infinitely until a solution is found or we get stuck
     while True:
         x += 1
-        print(f"climb-turn: {x}")
+       # print(f"climb-turn: {x}")
         boards = getAllBoards(curBoard)
         goodBoards = []
         #array of all the good heuristics. need to create a np.random_choice() probability to select which one should be bestBoard
         goodHeuristics = []
         goodDict = {}
-        index = 0
+        badBoards = []
+        badHeuristics = []
+        badDict = {}    
+        gIndex = 0
+        bIndex = 0
         for posBoard in boards:
             numCurQueens  = checkQueenPairs(curBoard)
             numPosQueens = checkQueenPairs(posBoard)
@@ -34,16 +38,25 @@ def hillClimb(board):
                 goodHeuristics.append(numPosQueens)
                 goodBoards.append(posBoard)
                 
-                goodDict[index] = (n * 2) - numPosQueens #it's n - numPosQueens because a low number is good for the hueristic, but you can't normalize 0. Thus we reverse it and make it so a large number is good.
+                goodDict[gIndex] = (n * 2) - numPosQueens #it's n - numPosQueens because a low number is good for the hueristic, but you can't normalize 0. Thus we reverse it and make it so a large number is good.
                 #have the boards be assigned to a number 
                 #when we pick a number in selectBoard() then we choose the board in goodBoards whose index is that number
-                index += 1
+                gIndex += 1
+            else:
+                badBoards.append(posBoard)
+                badHeuristics.append(numPosQueens)
+                badDict[bIndex] = (n*2) - numPosQueens
+                bIndex +=1
                 
-        #if there are no good boards return none to do a random restart
+                
+                
+        #if there are no good boards then choose the best option out of the "bad" boards
         if goodBoards == []:
-            return None
+            #print("NO GOOD BOARDS")
+            bestBoard = selectBoard(badDict, badBoards, n)
         #here we are always choosing the board with the lowest heuristic, however we should instead have a probability function that biasly chooses a board
-        bestBoard = selectBoard(goodDict, goodBoards, n)
+        else:
+            bestBoard = selectBoard(goodDict, goodBoards, n)
         #bestBoard = max(goodBoards, key=checkQueenPairs)
         viewBoard(bestBoard)
         
@@ -52,10 +65,10 @@ def hillClimb(board):
         
         if bestBoard == curBoard:
             return None
-        #if statement where if we switch the board around more than n+5 times then random restart
-        if x > n + (int(n/5)):
+        #if statement where if we switch the board around more than n*2 times then random restart
+        if x > (n*2):
             return None
-        print(bestBoard)
+        #print(bestBoard)
         curBoard = bestBoard
                 
         
@@ -65,15 +78,16 @@ def hillClimb(board):
 #If the heuristic is low, it will be towards at the front of the array. Boards to the front of the array should have the highest probability
 
 def selectBoard(goodDict, goodBoards, n):
+
     #goodBoards should have the boards w the lowest heuristic at the front
     values = np.array(list(goodDict.values()))
     keys = np.array(list(goodDict.keys()))
     if len(values) > 1 or values[0] + (n*2) != 0:
-        print(f"heuristics: {values + (n*2)}")
+       # print(f"heuristics: {values + (n*2)}")
         
         #get a factor to normalize all of the goodBoards based on their heuristic score
-        print(sum((goodDict.values())))
-        print(f"pre-values = {values}")
+       # print(sum((goodDict.values())))
+        #print(f"pre-values = {values}")
         probs = []
         for b in goodDict:
             if goodDict[b] == 0:
@@ -87,8 +101,8 @@ def selectBoard(goodDict, goodBoards, n):
             
         #use np.random.choice() to randmoly choose one of the good boards based on this new normalized probability.
         
-        print(f"keys = {keys}")
-        print(f"prob_values = {probs}")
+       # print(f"keys = {keys}")
+       # print(f"prob_values = {probs}")
         choice = np.random.choice(keys, p = probs, replace=False)
         print(choice)
         return goodBoards[choice]
