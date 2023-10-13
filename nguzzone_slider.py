@@ -45,6 +45,8 @@ def h2(puzzle):
 
     # Return the total calculated distance.
     return totalDist
+
+
 #Inserts move sequence into the frontier in the right position
 def updateFrontier(frontier, frontierEstimates, moves, estimate):
   
@@ -56,6 +58,7 @@ def updateFrontier(frontier, frontierEstimates, moves, estimate):
         index += 1
     frontier.insert(index, moves)
     frontierEstimates[moves] = estimate
+    
     
 def solve(p):
     '''A* search with h2 heuristic to solve the puzzle.'''
