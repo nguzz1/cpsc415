@@ -2,12 +2,13 @@
 
 '''
 CPSC 415 -- Homework #2 template
-Stephen Davies, University of Mary Washington, fall 2023
+Nicolas Guzzone, University of Mary Washington, fall 2023
 '''
 
 from atlas import Atlas
 import numpy as np
 import sys
+import math
 
 
 def find_path(atlas, alg):
@@ -20,11 +21,93 @@ def find_path(atlas, alg):
     optimal path between those two cities. The second is the total cost
     of that path.'''
 
+    
     # THIS IS WHERE YOUR AMAZING CODE GOES
+    if alg == 'greedy':
+        return greedy(atlas)
+    elif alg == 'Dijkstras':
+        return djikstras(atlas)
+    elif alg == 'A*':
+        return aStar(atlas)
+  
+    
 
     # Here's a (bogus) example return value:
     return ([0,3,2,4],970)
 
+
+def greedy(atlas):
+
+    cities = atlas.get_num_cities()
+    
+    #Atlas Copy of the rows with boolean value of whethe ror not we have visited it
+    #make all cities false since we have never visited them yet
+    expanded = [False] * cities
+    #keep track of all the actual distances of each city
+  
+    start = 0
+    goal = cities - 1
+    
+    #list that keeps track of the entire path
+    path = [start]
+    total = 0
+    
+    
+    curr_city = start 
+    
+    #while we are not in the goal keep trying to find the goal
+    while curr_city != goal:
+        
+        #we have expanded the city we are currently at
+        expanded[curr_city] = True
+        
+        #variable that keeps track of the smallest crows fly distance of the current row
+        smallest = math.inf
+        #next city we should visit
+        go_here = None
+        #loop through every city in the row
+        for city in range(cities):
+            # if we haven't expanded the city yet, then check its distances
+            if not expanded[city]:
+                rDist = atlas.get_road_dist(curr_city, city)
+                cDist = atlas.get_crow_flies_dist(city, goal)
+                #if a road exists between the cities, then check the heuristic
+                if rDist < math.inf:
+                    #check to see if the crow flys distance of this city is the smallest 
+                    #if it is, we go to that city
+                    if cDist < smallest:
+                        smallest = cDist
+                        go_here = city
+        #afd the path cost to our total cost              
+        total += atlas.get_road_dist(curr_city, go_here)
+       
+        #add the city to our path
+        path.append(go_here)
+        #update our current city
+        curr_city = go_here
+        
+    total += atlas.get_road_dist(curr_city, go_here)
+    path.append(go_here)
+ 
+
+    
+    #I need to restart. fuck this rabbithole
+    return path, total
+
+                
+                
+                
+
+def djikstras(atlas):
+
+    #I tried...
+        
+        
+    return "Unimplemented"
+
+def aStar(atlas):
+
+    return "Unimplemented"
 
 
 if __name__ == '__main__':
